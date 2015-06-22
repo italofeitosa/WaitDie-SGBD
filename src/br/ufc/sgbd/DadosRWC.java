@@ -13,8 +13,8 @@ import java.util.Scanner;
 
 public class DadosRWC {
 
-	public final static String FILE_NAME = "C:\\Users\\italo\\Desktop\\transacaoEntrda.txt";
-	public final static String OUTPUT_FILE_NAME = "C:\\Users\\italo\\Desktop\\saida.txt";
+	public final static String FILE_NAME = "C:\\Users\\tiagoalencar\\Desktop\\transacaoEntrda.txt";
+	public final static String OUTPUT_FILE_NAME = "C:\\Users\\tiagoalencar\\Desktop\\saida.txt";
 	public final static Charset ENCODING = StandardCharsets.UTF_8;
 
 	// For smaller files
