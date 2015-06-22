@@ -42,7 +42,7 @@ public class ReadFile {
 					clausulas.add(ordenada);
 				}
 				count++;
-				System.out.println("" + celula.getContents());
+				//System.out.println("" + celula.getContents());
 			}
 
 		}

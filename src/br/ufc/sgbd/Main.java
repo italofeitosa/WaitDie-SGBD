@@ -30,6 +30,7 @@ public class Main {
 		if(clausulasTransaction != null){
 			WaitDie waitDie = new WaitDie(clausulasTransaction);
 			waitDie.verifcaTransacao();
+			
 		}
 		
 		//waitDie.comparaTransaction(waitDie.verifcaTransacao());

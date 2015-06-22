@@ -1,11 +1,15 @@
 package br.ufc.sgbd;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class WaitDie {
 
 	private List<String> listOfTransaction;
+	private ArrayList<String> clasula = new ArrayList<String>();
+	private ArrayList<String> listOfBackup = new ArrayList<String>();
+	private boolean isFlagAbort = false;
 
 	public WaitDie(ArrayList<String> listOfTransaction) {
 		this.listOfTransaction = listOfTransaction;
@@ -33,8 +37,8 @@ public class WaitDie {
 	 */
 
 	public ArrayList<String> verifcaTransacao() {
-		ArrayList<String> clasula = new ArrayList<String>();
-		clasula.add(listOfTransaction.get(1));
+		 //clasula= new ArrayList<String>();
+		clasula.add(listOfTransaction.get(0));
 		for (int i = 1; i < listOfTransaction.size(); i++) {
 
 			// Tratamento do Read
@@ -44,16 +48,46 @@ public class WaitDie {
 					if (!listOfTransaction.get(i).substring(0, 1).equals(listOfTransaction.get(j).substring(0, 1))) {
 						if (!listOfTransaction.get(i).substring(1, 2).equals(listOfTransaction.get(j).substring(1, 2))) {
 							if (listOfTransaction.get(i).substring(3, 4).equals(listOfTransaction.get(j).substring(3, 4))) {
-								// Abort							
-								System.out.println("Abort T"+ listOfTransaction.get(i).substring(1,	2));
-								j = i;
+								int currentTime = Integer.parseInt(listOfTransaction.get(i).substring(1, 2));
+								int compareTime = Integer.parseInt(listOfTransaction.get(j).substring(1, 2));
+								if(currentTime < compareTime){						
+										System.out.println("Wait T" + listOfTransaction.get(i).substring(1, 2));
+										if(!clasula.contains(listOfTransaction.get(i))){
+											clasula.add(listOfTransaction.get(i));
+											//listOfTransaction.remove(i);
+										}
+										
+										
+										j = i;							
+									}else{
+										System.out.println("Abort T" + listOfTransaction.get(i).substring(1, 2));
+										removeClausula(listOfTransaction.get(i).substring(1, 2));
+										updatelistOfTransaction(listOfTransaction.get(i).substring(1, 2));
+										j = i;
+									}
+							}else{	
+								if(!clasula.contains(listOfTransaction.get(i))){
+									clasula.add(listOfTransaction.get(i));
+									//listOfTransaction.remove(i);
+								}
 							}
-
+ 
+						}else{
+							if(!clasula.contains(listOfTransaction.get(i))){
+								clasula.add(listOfTransaction.get(i));
+								//listOfTransaction.remove(i);
+							}
 						}
 
+					}else{
+						if(!clasula.contains(listOfTransaction.get(i))){
+							clasula.add(listOfTransaction.get(i));
+							//listOfTransaction.remove(i);
+						}
 					}
 				}
-				// Tratamento Write
+			
+			// Tratamento Write
 
 			} else if (listOfTransaction.get(i).substring(0, 1).equals("w")) {
 				for (int j = 0; j < i; j++) {
@@ -62,37 +96,53 @@ public class WaitDie {
 							int currentTime = Integer.parseInt(listOfTransaction.get(i).substring(1, 2));
 							int compareTime = Integer.parseInt(listOfTransaction.get(j).substring(1, 2));
 							if(currentTime < compareTime){
-							// Abort							
+								if(!clasula.contains(listOfTransaction.get(i))){
+									clasula.add(listOfTransaction.get(i));
+									//listOfTransaction.remove(i);
+								}
 								System.out.println("Wait T" + listOfTransaction.get(i).substring(1, 2));
 								j = i;							
-							}else{
+							}else{								
 								System.out.println("Abort T" + listOfTransaction.get(i).substring(1, 2));
+								removeClausula(listOfTransaction.get(i).substring(1, 2));
+								updatelistOfTransaction(listOfTransaction.get(i).substring(1, 2));
 								j = i;
+							}
+						}else{
+							if(!clasula.contains(listOfTransaction.get(i))){								
+								clasula.add(listOfTransaction.get(i));
+								//listOfTransaction.remove(i);
 							}
 						}
 
-					}
-
-				}
-				// Tratamento do Commit
-			} else if (listOfTransaction.get(i).substring(0, 1).equals("c")) {
-				for (int j = 0; j < i; j++) {
-					if (!listOfTransaction.get(i).substring(0, 1).equals(listOfTransaction.get(j).substring(0, 1))) {
-						if (!listOfTransaction.get(i).substring(1, 2).equals(listOfTransaction.get(j).substring(1, 2))) {
-							if (listOfTransaction.get(i).substring(3, 4).equals(listOfTransaction.get(j).substring(3, 4))) {
-								// Abort
-								
-								System.out.println("Abort T"+ listOfTransaction.get(i).substring(1,	2));
-								j = i;
-							}
-
+					}else{
+						if(!clasula.contains(listOfTransaction.get(i))){							
+							clasula.add(listOfTransaction.get(i));
+							//listOfTransaction.remove(i);
 						}
-
 					}
+
 				}
+				
 			}
 
 		}
+		
+		
+		/*
+			while (!listOfTransaction.isEmpty()) {
+				listOfTransaction = new ArrayList<String>();
+				for (int j = 0; j < clasula.size(); j++) {
+					listOfTransaction.add(clasula.get(j));
+					
+				}
+				verifcaTransacao();
+				
+			}*/
+		
+		
+		
+		System.out.println(clasula);
 		return clasula;
 
 	}
@@ -112,25 +162,35 @@ public class WaitDie {
 			System.out.println(arrayCompartor);
 
 		}
-
-		for (int i = 0; i < arrayCompartor.size(); i++) {
-			// String teste = arrayCompartor.get(i).substring(1).equals("1");
-			/*
-			 * if(arrayCompartor.get(i).e){ System.out.println("teste"); }
-			 */
+		
+	}
+	
+	private void updatelistOfTransaction(String numberTransaction){		
+		for (int i = 0; i < listOfTransaction.size(); i++) {
+			if(listOfTransaction.get(i).substring(1, 2).equals(numberTransaction)){
+				listOfBackup.add(listOfTransaction.get(i));
+				listOfTransaction.remove(i);
+			}
+			 
 		}
-
-		/*
-		 * for (String string : clausulas) { String transaction =
-		 * string.substring(string.indexOf(":") + 1); array =
-		 * transaction.split(" ");
-		 * 
-		 * }
-		 * 
-		 * for (int i = 0; i < array.length; i++) {
-		 * 
-		 * }
-		 */
+		
+		for (int i = 0; i < listOfBackup.size(); i++) {
+			if(!clasula.contains(listOfBackup.get(i))){
+				clasula.add(listOfBackup.get(i));
+			}
+		}
+		
+		//System.out.println(listOfTransaction);
+	}
+	
+	private void removeClausula(String numberTransaction){
+		for (int i = 0; i < clasula.size(); i++) {
+			if(clasula.get(i).substring(1, 2).equals(numberTransaction)){
+				clasula.remove(i);
+			}
+				
+		}		
+		
 	}
 
 }
