@@ -39,7 +39,8 @@ public class WaitDie {
 	public ArrayList<String> verifcaTransacao() {
 		 //clasula= new ArrayList<String>();
 		clasula.add(listOfTransaction.get(0));
-		for (int i = 1; i < listOfTransaction.size(); i++) {
+		int i = 0;
+		while( i < listOfTransaction.size()) {
 
 			// Tratamento do Read
 
@@ -56,14 +57,12 @@ public class WaitDie {
 											clasula.add(listOfTransaction.get(i));
 											//listOfTransaction.remove(i);
 										}
-										
-										
-										j = i;							
+										j=i;						
 									}else{
 										System.out.println("Abort T" + listOfTransaction.get(i).substring(1, 2));
 										removeClausula(listOfTransaction.get(i).substring(1, 2));
 										updatelistOfTransaction(listOfTransaction.get(i).substring(1, 2));
-										j = i;
+										j=i;
 									}
 							}else{	
 								if(!clasula.contains(listOfTransaction.get(i))){
@@ -125,6 +124,7 @@ public class WaitDie {
 				}
 				
 			}
+			i++;
 
 		}
 		
@@ -141,8 +141,11 @@ public class WaitDie {
 			}*/
 		
 		
-		
-		System.out.println(clasula);
+		for (int k = 0; k < listOfBackup.size(); k++) {
+			clasula.add(listOfBackup.get(k));
+			
+		}
+		System.out.println("O processamento é: " + clasula);
 		return clasula;
 
 	}
@@ -169,16 +172,16 @@ public class WaitDie {
 		for (int i = 0; i < listOfTransaction.size(); i++) {
 			if(listOfTransaction.get(i).substring(1, 2).equals(numberTransaction)){
 				listOfBackup.add(listOfTransaction.get(i));
-				listOfTransaction.remove(i);
+				//listOfTransaction.remove(i);
 			}
 			 
 		}
 		
-		for (int i = 0; i < listOfBackup.size(); i++) {
-			if(!clasula.contains(listOfBackup.get(i))){
-				clasula.add(listOfBackup.get(i));
-			}
-		}
+		/*for (int i = 0; i < listOfBackup.size(); i++) {
+			listOfTransaction.add(listOfBackup.get(i));
+			System.out.println(listOfTransaction);
+			
+		}*/
 		
 		//System.out.println(listOfTransaction);
 	}
